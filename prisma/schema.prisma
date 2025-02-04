@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL") 
 }
 
 model User {
@@ -15,7 +15,7 @@ model User {
   role      String   // "admin" | "teacher" | "student"
   createdAt DateTime @default(now())
 
-  courses   Course[] @relation("UserCourses") // Un prof peut avoir plusieurs cours
+  courses   Course[] @relation("TeacherCourses")
   enrollments Enrollment[]
 }
 
@@ -29,7 +29,7 @@ model Course {
   schedule    String
   capacity    Int
 
-  teacher     User     @relation("UserCourses", fields: [teacherId], references: [id])
+  teacher     User   @relation("TeacherCourses", fields: [teacherId], references: [id])
   enrollments Enrollment[]
 }
 
@@ -43,6 +43,8 @@ model Enrollment {
   student User @relation(fields: [studentId], references: [id])
   course  Course @relation(fields: [courseId], references: [id])
   progress Progress[]
+
+  @@unique([studentId, courseId]) 
 }
 
 model Progress {
